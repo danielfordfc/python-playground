@@ -1,0 +1,305 @@
+{
+    "doc": "Offer status for a GPO application has been updated.",
+    "fields": [
+      {
+        "doc": "Unique record identifier",
+        "name": "id",
+        "type": {
+          "logicalType": "uuid",
+          "type": "string"
+        }
+      },
+      {
+        "doc": "The time at which the record was created (ms since epoch)",
+        "name": "published_at",
+        "type": {
+          "logicalType": "timestamp-millis",
+          "type": "long"
+        }
+      },
+      {
+        "doc": "The name of the service that created the record",
+        "name": "published_by",
+        "type": "string"
+      },
+      {
+        "doc": "The loan application id",
+        "name": "loan_application_id",
+        "type": {
+          "logicalType": "uuid",
+          "type": "string"
+        }
+      },
+      {
+        "doc": "Details of the offer whose status has been updated.",
+        "name": "offer",
+        "type": [
+          {
+            "fields": [
+              {
+                "doc": "Offer id",
+                "name": "id",
+                "type": {
+                  "logicalType": "uuid",
+                  "type": "string"
+                }
+              },
+              {
+                "doc": "The requested amount in cents",
+                "name": "amount_requested_cents",
+                "type": "long"
+              },
+              {
+                "doc": "The requested term in months",
+                "name": "term_requested_months",
+                "type": "long"
+              },
+              {
+                "doc": "The maximum affordable amount in cents",
+                "name": "maximum_affordable_amount_cents",
+                "type": "long"
+              },
+              {
+                "doc": "The offered amount in cents",
+                "name": "amount_cents",
+                "type": "long"
+              },
+              {
+                "doc": "The offered term in months",
+                "name": "term_months",
+                "type": "long"
+              },
+              {
+                "doc": "The risk band",
+                "name": "risk_band",
+                "type": "string"
+              },
+              {
+                "doc": "The interest rate of the offer",
+                "name": "interest_rate",
+                "type": "double"
+              },
+              {
+                "default": null,
+                "name": "tags",
+                "type": [
+                  "null",
+                  {
+                    "items": {
+                      "fields": [
+                        {
+                          "name": "type",
+                          "type": "string"
+                        },
+                        {
+                          "name": "value",
+                          "type": "boolean"
+                        }
+                      ],
+                      "name": "offer_tag",
+                      "type": "record"
+                    },
+                    "type": "array"
+                  }
+                ]
+              },
+              {
+                "default": null,
+                "doc": "The APR of the offer",
+                "name": "apr",
+                "type": [
+                  "null",
+                  "double"
+                ]
+              },
+              {
+                "default": null,
+                "doc": "The monthly amount to be paid every month in cents",
+                "name": "monthly_repayment_cents",
+                "type": [
+                  "null",
+                  "long"
+                ]
+              },
+              {
+                "default": null,
+                "doc": "The total amount repayable in cents",
+                "name": "total_amount_repayable_cents",
+                "type": [
+                  "null",
+                  "long"
+                ]
+              },
+              {
+                "default": null,
+                "doc": "For refinance offers - the amount required to settle the existing FC loans being refinanced",
+                "name": "total_settlement_amount_cents",
+                "type": [
+                  "null",
+                  "long"
+                ]
+              },
+              {
+                "default": null,
+                "doc": "The total principal of the loan, including fees, in cents that will accrue interest",
+                "name": "total_offer_amount_cents",
+                "type": [
+                  "null",
+                  "long"
+                ]
+              },
+              {
+                "default": null,
+                "doc": "FCs fee for originating the loan in cents",
+                "name": "origination_fee_cents",
+                "type": [
+                  "null",
+                  "long"
+                ]
+              },
+              {
+                "default": null,
+                "doc": "The brokers fee in cents",
+                "name": "broker_commission_cents",
+                "type": [
+                  "null",
+                  "long"
+                ]
+              },
+              {
+                "default": null,
+                "doc": "Sum of all fees associated with originating the loan in cents",
+                "name": "completion_fee_cents",
+                "type": [
+                  "null",
+                  "long"
+                ]
+              },
+              {
+                "doc": "The creation time of the offer",
+                "name": "created_at",
+                "type": "long"
+              },
+              {
+                "doc": "The time the offer expires at",
+                "name": "expires_at",
+                "type": "long"
+              },
+              {
+                "default": [],
+                "doc": "Loans selected for refinance included in the offer",
+                "name": "applications_selected_for_refinance",
+                "type": {
+                  "items": {
+                    "fields": [
+                      {
+                        "doc": "Loan application id",
+                        "name": "loan_application_id",
+                        "type": {
+                          "logicalType": "uuid",
+                          "type": "string"
+                        }
+                      }
+                    ],
+                    "name": "refinance_details",
+                    "type": "record"
+                  },
+                  "type": "array"
+                }
+              }
+            ],
+            "name": "originations_offer",
+            "namespace": "com.fundingcircle",
+            "type": "record"
+          },
+          {
+            "fields": [
+              {
+                "doc": "Offer id",
+                "name": "id",
+                "type": {
+                  "logicalType": "uuid",
+                  "type": "string"
+                }
+              },
+              {
+                "doc": "The risk band",
+                "name": "risk_band",
+                "type": "string"
+              },
+              {
+                "doc": "The amount of credit in cents available to the borrower",
+                "name": "line_of_credit_limit_cents",
+                "type": "long"
+              },
+              {
+                "name": "tags",
+                "type": {
+                  "items": "offer_tag",
+                  "type": "array"
+                }
+              },
+              {
+                "doc": "The creation time of the offer",
+                "name": "created_at",
+                "type": "long"
+              },
+              {
+                "doc": "The time the offer expires at",
+                "name": "expires_at",
+                "type": "long"
+              },
+              {
+                "default": null,
+                "doc": "Should a PG be requested with the app?",
+                "name": "pg_required",
+                "type": [
+                  "null",
+                  "boolean"
+                ]
+              },
+              {
+                "default": null,
+                "doc": "Whether the offer was made as a companion offer for another application.",
+                "name": "companion_offer",
+                "type": [
+                  "null",
+                  "boolean"
+                ]
+              }
+            ],
+            "name": "originations_line_of_credit_offer",
+            "namespace": "com.fundingcircle",
+            "type": "record"
+          }
+        ]
+      },
+      {
+        "doc": "The offer status",
+        "name": "offer_status",
+        "type": {
+          "name": "offer_status",
+          "symbols": [
+            "accepted",
+            "rejected"
+          ],
+          "type": "enum"
+        }
+      },
+      {
+        "default": null,
+        "doc": "Id of the application the offer originally came from. Currently only applicable for companion offers.",
+        "name": "originating_application_id",
+        "type": [
+          "null",
+          {
+            "logicalType": "uuid",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "name": "originations_offer_status_updated",
+    "namespace": "com.fundingcircle.gpo",
+    "type": "record"
+  }

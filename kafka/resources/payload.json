@@ -1,0 +1,18 @@
+{
+    "id": "fb887d9e-14d5-4731-a772-b5017bde27ae",
+    "published_at": "1687",
+    "published_by": "gpo-0",
+    "loan_application_id": "fb887d9e-14d5-4731-a772-b5017bde27ae",
+    "offer": {
+        "id": "fb887d9e-14d5-4731-a772-b5017bde27ae",
+        "risk_band": "A",
+        "line_of_credit_limit_cents": 30,
+        "tags": [],
+        "created_at": 1678457219624,
+        "expires_at": 1681049219624,
+        "pg_required": "False",
+        "companion_offer": "True"
+    },
+    "offer_status": "accepted",
+    "originating_application_id": "fb887d9e-14d5-4731-a772-b5017bde27ae"
+}
