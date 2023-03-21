@@ -1,3 +1,5 @@
 pip-tools
 confluent-kafka
 argparse
+fastavro
+avro
