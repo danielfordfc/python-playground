@@ -100,12 +100,11 @@ def generate_fake_data(schema):
     return fake_data
 
 
-if __name__ == "__main__":
-    path = os.path.realpath(os.path.dirname(__file__))
-    schema_parse = avro.schema.parse(open(f"{path}/schemas/inputs/schema_complex.json", "rb").read())
+# if __name__ == "__main__":
+#     path = os.path.realpath(os.path.dirname(__file__))
+#     schema_parse = avro.schema.parse(open(f"{path}/schemas/inputs/user_generic.avsc", "rb").read())
 
-    data_payload = generate_fake_data(schema_parse)
+#     data_payload = generate_fake_data(schema_parse)
 
-    # write to file
-    with open(f"{path}/schemas/outputs/schema_complex_payload.json", "w") as f:
-        f.write(json.dumps(data_payload, indent=4))
+#     with open(f"{path}/schemas/outputs/user_generic_payload.json", "w") as f:
+#         f.write(json.dumps(data_payload, indent=4))
