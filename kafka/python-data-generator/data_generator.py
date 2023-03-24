@@ -6,6 +6,9 @@ from faker import Faker
 import uuid
 import random
 
+import datetime as dt
+import time
+
 """
 @TODO: Handle all Logical Types inside PrimitiveSchema parsing
 @DONE: Handle MapTypes
@@ -16,6 +19,11 @@ import random
 @TODO: Use `Faker` instead of `random`
 @TODO: Have the possibility of declaring the default:
 @TODO: Have the possibility of the union declaring a null (this may be the same as declaring the default)
+@TODO: Can we have a config file that declares limits for the random values?
+@TODO: Produce a README.md file that explains how to use this
+@TODO: Add an iterator that can be used to track the number of records produced
+    (i.e. if we take a random string in the schema, we can use this to track the number of records produced and use it as a PK)
+@TODO: Setup IO
 """
 
 def generate_fake_data(schema):
@@ -52,9 +60,15 @@ def generate_fake_data(schema):
             elif isinstance(field_type, PrimitiveSchema):
                 # Handle primitive fields
                 if field_type.type == 'int':
+                    # if 'logicalType' in field_type.other_props and field_type.other_props['logicalType'] == 'date':
+                    #     fake_data[field_name] = datetime.date(random.randint(1970, 2022), random.randint(1, 12), random.randint(1, 28)).strftime("%Y-%m-%d")
+                    # else:
                     fake_data[field_name] = random.randint(0, 100)
                 elif field_type.type == 'long':
-                    fake_data[field_name] = random.randint(0, 1000000)
+                    if 'logicalType' in field_type.other_props and field_type.other_props['logicalType'] == 'timestamp-millis':
+                        fake_data[field_name] = int(time.time() * 1000)
+                    else:
+                        fake_data[field_name] = random.randint(0, 1000000)
                 elif field_type.type == 'float':
                     fake_data[field_name] = random.uniform(0, 100)
                 elif field_type.type == 'double':
@@ -62,7 +76,7 @@ def generate_fake_data(schema):
                 elif field_type.type == 'string':
                     fake_data[field_name] = ''.join(random.choices(['a', 'b', 'c', 'd', 'e', 'f'], k=10))
                 elif field_type.type == 'boolean':
-                    fake_data[field_name] = True
+                    fake_data[field_name] = random.choices(['True', 'False'])
             elif isinstance(field_type, EnumSchema):
                 fake_data[field_name] = random.choice(field_type.symbols)
             elif isinstance(field_type, UnionSchema):

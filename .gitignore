@@ -131,4 +131,5 @@ dmypy.json
 .vscode/
 .DS_Store
 .idea/
-kafka/schemas/inputs
+kafka/python-data-generator/schemas/inputs/fca*
+kafka/python-data-generator/schemas/outputs/fca-*
