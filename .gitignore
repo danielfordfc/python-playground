@@ -130,3 +130,6 @@ dmypy.json
 
 .vscode/
 .DS_Store
+.idea/
+kafka/schemas/inputs
+kafka/schemas/outputs

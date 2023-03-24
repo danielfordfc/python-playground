@@ -82,7 +82,7 @@ def main(args):
         schema = "user_generic.avsc"
 
     path = os.path.realpath(os.path.dirname(__file__))
-    with open(f"{path}/avro/{schema}") as f:
+    with open(f"{path}/schemas/inputs/{schema}") as f:
         schema_str = f.read()
 
     schema_registry_conf = {'url': args.schema_registry}

@@ -3,3 +3,7 @@ confluent-kafka
 argparse
 fastavro
 avro
+faker
+faker-schema
+avro-json-serializer
+avro-python3
