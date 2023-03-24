@@ -132,4 +132,3 @@ dmypy.json
 .DS_Store
 .idea/
 kafka/schemas/inputs
-kafka/schemas/outputs

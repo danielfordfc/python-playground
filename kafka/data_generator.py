@@ -9,6 +9,7 @@ import random
 """
 @TODO: Handle all Logical Types inside PrimitiveSchema parsing
 @DONE: Handle MapTypes
+@DONE: Handle OneOf UnionTypes by randomly selecting the element to process.
 @TODO: Confirm Parity with actual record payloads seen for these topics
     @TODO: I believe in Unions of type Records, its returning both possible records, instead of just one, under the parent key
 @TODO: Write Unit Tests for all of this
@@ -65,7 +66,7 @@ def generate_fake_data(schema):
             elif isinstance(field_type, EnumSchema):
                 fake_data[field_name] = random.choice(field_type.symbols)
             elif isinstance(field_type, UnionSchema):
-                # handle nullable union of primitives
+                # Handle nullable union of primitives
                 primitive_count = 0
                 primitive_list = []
                 for n in field_type.schemas:
@@ -77,10 +78,9 @@ def generate_fake_data(schema):
                     fake_data[field_name] = ''.join(random.choices(['a', 'b', 'c', 'd', 'e', 'f'], k=10))
                     continue
                 # Handle union fields
-                for field_sub_type in field_type.schemas:
-                    field_sub_name = field_sub_type.name if hasattr(field_sub_type, 'name') else field_sub_type.items.name
-                    if field_sub_type.type != 'null':
-                        fake_data[field_sub_name] = generate_fake_data(field_sub_type)
+                non_null_types = [t for t in field_type.schemas if t.type != 'null']
+                rnd_idx = random.randint(0, len(non_null_types)-1)
+                fake_data[field_name] = generate_fake_data(non_null_types[rnd_idx])
             else:
                 raise ValueError
     return fake_data
