@@ -16,10 +16,16 @@ def test_generate_fake_data():
     path = os.path.dirname(os.path.abspath(__file__))
 
     schemas = [
+        # tests passing when schema doesn't contain a namespace.
+        # needs to be handled in the code to output fully qualified names on data generation...
+        # i.e. User field with a namespace of  "namespace": "confluent.io.examples.serialization.avro", "name": "User",
+        # would need to resolve to 'name': 'confluent.io.examples.serialization.avro.User',
+
         avro.schema.parse(open(f"{path}/schemas/inputs/user_generic.avsc", "rb").read()),
         avro.schema.parse(open(f"{path}/schemas/inputs/user_specific.avsc", "rb").read())
     ]
     for schema in schemas:
+
         # Generate fake data for the schema
         fake_data = generate_fake_data(schema)
 
