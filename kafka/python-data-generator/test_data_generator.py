@@ -11,6 +11,7 @@ import json
 from avro.schema import *
 
 import glob
+import uuid
 
 
 """
@@ -82,6 +83,17 @@ def fit_expected_schema(qualified_schema):
     return expected_schema
 
 
+def uuid_to_str(obj):
+    if isinstance(obj, dict):
+        return {k: uuid_to_str(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [uuid_to_str(element) for element in obj]
+    elif isinstance(obj, uuid.UUID):
+        return str(obj)
+    else:
+        return obj
+
+
 def test_generate_fake_data():
     # Define the path to the Avro schemas
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas/inputs")
@@ -138,4 +150,7 @@ def test_generate_fake_data():
                 if isinstance(value, dt.datetime):
                     deserialized_data[key] = datetime_to_timestamp(value)
 
-            assert deserialized_data == fake_data
+            # resolve uuid objects back to the string representation.
+            deserialized_data_str = uuid_to_str(deserialized_data)
+
+            assert deserialized_data_str == fake_data

@@ -39,7 +39,6 @@ QoL TODOs:
 
 
 #Make this configurable
-
 ARRAY_MIN_LENGTH = 1
 ARRAY_MIN_LENGTH_DEFAULT = 1
 ARRAY_MAX_LENGTH = 2
@@ -111,7 +110,7 @@ def generate_fixed_data(schema):
     size = schema.size
     random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=size))
     random_data = bytearray(random_string, 'utf-8')
-    return base64.b64encode(random_data).decode('utf-8')
+    return random_data
 
 def get_min_max_values(field_type):
     default_min_max = {
@@ -164,6 +163,12 @@ def process_primitive_type(field_type):
     else:
         raise ValueError(f"Unsupported field type: {field_type.type}")
 
+#Custom JSON Encoder class to handle writing of byte arrays to strings, so to not mess with the test suite.
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, bytearray):
+            return base64.b64encode(obj).decode('utf-8')
+        return super().default(obj)
 
 if __name__ == "__main__":
     # Define the path to the Avro schemas
@@ -185,6 +190,6 @@ if __name__ == "__main__":
         output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas/outputs")
 
         with open(f"{output_path}/{filename}", "w") as f:
-            f.write(json.dumps(data_payload, indent=4))
+            f.write(json.dumps(data_payload, indent=4, cls=CustomJSONEncoder))
             print(f'Wrote file: {filename}')
         f.close()
