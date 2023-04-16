@@ -1,0 +1,24 @@
+# elif isinstance(field_type, UnionSchema):
+            #     non_null_types = [t for t in field_type.schemas if t.type != 'null']
+            #     rnd_idx = random.randint(0, len(non_null_types) - 1)
+            #
+            #     if isinstance(non_null_types[rnd_idx], EnumSchema):
+            #         fake_data[field_name] = random.choice([None] + list(non_null_types[rnd_idx].symbols))
+            #     elif isinstance(non_null_types[rnd_idx], ArraySchema):
+            #         if random.random() > 0.5:  # Add a 50% chance to generate an array instead of null
+            #             if isinstance(non_null_types[rnd_idx].items, RecordSchema):
+            #                 fake_data[field_name] = [generate_fake_data(non_null_types[rnd_idx].items)]
+            #             else:
+            #                 fake_data[field_name] = [generate_fake_data(non_null_types[rnd_idx].items) for _ in
+            #                                          range(3)]
+            #         else:
+            #             fake_data[field_name] = None
+            #     elif not isinstance(non_null_types[rnd_idx], RecordSchema) and not isinstance(non_null_types[rnd_idx],
+            #                                                                                   UnionSchema):
+            #         logical_type = non_null_types[rnd_idx].props.get("logicalType", None)
+            #         fake_data[field_name] = process_primitive_type(non_null_types[rnd_idx], logical_type)
+            #     else:
+            #         if random.random() > 0.5:  # Add a 50% chance to generate a record instead of null
+            #             fake_data[field_name] = generate_fake_data(non_null_types[rnd_idx])
+            #         else:
+            #             fake_data[field_name] = None

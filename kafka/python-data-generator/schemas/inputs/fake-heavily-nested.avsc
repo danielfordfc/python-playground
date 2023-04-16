@@ -1,0 +1,81 @@
+{
+  "type": "record",
+  "name": "example",
+  "fields": [
+    {
+      "name": "field1",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "subrecord1",
+          "fields": [
+            {
+              "name": "subfield1",
+              "type": "int"
+            },
+            {
+              "name": "subfield2",
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "subrecord2",
+                  "fields": [
+                    {
+                      "name": "subfield3",
+                      "type": "string"
+                    },
+                    {
+                      "name": "subfield4",
+                      "type": "boolean"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "field2",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "record",
+            "name": "subrecord3",
+            "fields": [
+              {
+                "name": "subfield5",
+                "type": "int"
+              },
+              {
+                "name": "subfield6",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "subrecord4",
+                    "fields": [
+                      {
+                        "name": "subfield7",
+                        "type": "string"
+                      },
+                      {
+                        "name": "subfield8",
+                        "type": "int"
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
