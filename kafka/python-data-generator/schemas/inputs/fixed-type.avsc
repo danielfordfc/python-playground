@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "FixedExample",
+  "fields": [
+    {
+      "name": "fixed_field",
+      "type": {
+        "type": "fixed",
+        "name": "FixedBytes",
+        "size": 16
+      }
+    }
+  ]
+}

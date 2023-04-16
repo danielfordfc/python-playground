@@ -1,0 +1,22 @@
+{
+  "type": "record",
+  "name": "NestedMapArray",
+  "fields": [
+    {
+      "name": "nested_map",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "map",
+            "values": {
+              "type": "array",
+              "items": "string"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

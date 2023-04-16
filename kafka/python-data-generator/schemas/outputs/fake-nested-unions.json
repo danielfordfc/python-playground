@@ -1,0 +1,37 @@
+{
+    "1union_null_int": 1821256736,
+    "2union_null_bool": true,
+    "3union_null_float_double": Infinity,
+    "4union_null__record_of_str_int": {
+        "subfield1": "dbdfcedfcd",
+        "subfield2": 1082523107
+    },
+    "5union_null__record_of_str_bool": {
+        "subfield3": true,
+        "subfield4": "bbdbfafddb"
+    },
+    "6union_null__array_of_record_of_double_str": [
+        {
+            "subfield5": Infinity,
+            "subfield6": "dfbaddbbeb"
+        }
+    ],
+    "7union_null__map_of_record_of_int_bool": {
+        "key0": {
+            "subfield7": 657005516,
+            "subfield8": true
+        },
+        "key1": {
+            "subfield7": 1241776746,
+            "subfield8": false
+        },
+        "key2": {
+            "subfield7": 500309063,
+            "subfield8": true
+        }
+    },
+    "8union_null_enum": "pending",
+    "9union_null__array_of_enum": [
+        "green"
+    ]
+}

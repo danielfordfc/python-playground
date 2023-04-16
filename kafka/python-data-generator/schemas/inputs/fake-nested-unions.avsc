@@ -1,0 +1,111 @@
+{
+  "type": "record",
+  "name": "example",
+  "fields": [
+    {
+      "name": "1union_null_int",
+      "type": ["null", "int"]
+    },
+    {
+      "name": "2union_null_bool",
+      "type": ["null", "boolean"]
+    },
+    {
+      "name": "3union_null_float_double",
+      "type": ["null", "float", "double"]
+    },
+    {
+      "name": "4union_null__record_of_str_int",
+      "type": ["null", {
+        "type": "record",
+        "name": "subrecord1",
+        "fields": [
+          {
+            "name": "subfield1",
+            "type": "string"
+          },
+          {
+            "name": "subfield2",
+            "type": "int"
+          }
+        ]
+      }]
+    },
+    {
+      "name": "5union_null__record_of_str_bool",
+      "type": ["null", {
+        "type": "record",
+        "name": "subrecord2",
+        "fields": [
+          {
+            "name": "subfield3",
+            "type": "boolean"
+          },
+          {
+            "name": "subfield4",
+            "type": "string"
+          }
+        ]
+      }]
+    },
+    {
+      "name": "6union_null__array_of_record_of_double_str",
+      "type": ["null", {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "subrecord3",
+          "fields": [
+            {
+              "name": "subfield5",
+              "type": "double"
+            },
+            {
+              "name": "subfield6",
+              "type": "string"
+            }
+          ]
+        }
+      }]
+    },
+    {
+      "name": "7union_null__map_of_record_of_int_bool",
+      "type": ["null", {
+        "type": "map",
+        "values": {
+          "type": "record",
+          "name": "subrecord4",
+          "fields": [
+            {
+              "name": "subfield7",
+              "type": "int"
+            },
+            {
+              "name": "subfield8",
+              "type": "boolean"
+            }
+          ]
+        }
+      }]
+    },
+    {
+      "name": "8union_null_enum",
+      "type": ["null", {
+        "type": "enum",
+        "name": "status",
+        "symbols": ["active", "inactive", "pending"]
+      }]
+    },
+    {
+      "name": "9union_null__array_of_enum",
+      "type": ["null", {
+        "type": "array",
+        "items": {
+          "type": "enum",
+          "name": "color",
+          "symbols": ["red", "green", "blue"]
+        }
+      }]
+    }
+  ]
+}
