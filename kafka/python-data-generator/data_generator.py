@@ -34,77 +34,56 @@ QoL TODOs:
 @TODO: Handle document types!?
 """
 
-
 def generate_fake_data(schema):
-    """
-    Generates fake data in a Python dictionary that conforms to the given Avro schema.
-    """
-    fake_data = {}
     if isinstance(schema, RecordSchema):
-        for field in schema.fields:
-            field_name = field.name
-            field_type = field.type
-            qualified_field_name = field_name
-            # Check if the namespace is present in the schema and prepend it to the name
-            #if schema.namespace and isinstance(field_type, RecordSchema):
-            if schema.namespace and isinstance(field, RecordSchema):
-                # think this is correct?
-                field_name = f"{schema.namespace}.{field_name}"
-            # Use qualified_field_name for RecordSchema fields and field_name for other fields
-            if isinstance(field_type, ArraySchema):
-                if isinstance(field_type.items, RecordSchema):
-                    fake_data[field_name] = [dict(generate_fake_data(field_type.items))]
-                elif isinstance(field_type.items, ArraySchema):
-                    # Recursively call the function for nested arrays
-                    fake_data[field_name] = [generate_fake_data(field_type.items)]
-                else:
-                    fake_data[field_name] = [generate_fake_data(field_type.items)]
-            elif isinstance(field_type, RecordSchema):
-                fake_data[qualified_field_name] = dict(generate_fake_data(field_type))
-            elif isinstance(field_type, MapSchema):
-                if isinstance(field_type.values, RecordSchema):
-                    fake_data[field_name] = {f'key{i}': generate_fake_data(field_type.values) for i in range(3)}
-                elif isinstance(field_type.values, ArraySchema):
-                    fake_data[field_name] = {f'key{i}': [generate_fake_data(field_type.values.items) for _ in range(3)]
-                                             for i in range(3)}
-                else:
-                    fake_data[field_name] = {f'key{i}': process_primitive_type(field_type.values) for i in range(3)}
-            elif isinstance(field_type, PrimitiveSchema):
-                fake_data[field_name] = process_primitive_type(field_type)
-            elif isinstance(field_type, EnumSchema):
-                fake_data[field_name] = random.choice(field_type.symbols)
-            elif isinstance(field_type, UnionSchema):
-                non_null_types = [t for t in field_type.schemas if t.type != 'null']
-                rnd_type = random.choice(non_null_types)
-                if isinstance(rnd_type, PrimitiveSchema):
-                    fake_data[field_name] = process_primitive_type(rnd_type)
-                elif isinstance(rnd_type, ArraySchema):
-                    if isinstance(rnd_type.items, RecordSchema):
-                        fake_data[field_name] = [generate_fake_data(rnd_type.items) for _ in range(3)]
-                    elif isinstance(rnd_type.items, EnumSchema):
-                        fake_data[field_name] = [random.choice(rnd_type.items.symbols) for _ in range(3)]
-                    elif isinstance(rnd_type.items, MapSchema):
-                        if isinstance(rnd_type.items.values, RecordSchema):
-                            fake_data[field_name] = {f'key{i}': generate_fake_data(rnd_type.items.values) for i in range(3)}
-                        else:
-                            fake_data[field_name] = {f'key{i}': process_primitive_type(rnd_type.items.values) for i in
-                                                     range(3)}
-                elif isinstance(rnd_type, MapSchema):
-                    if isinstance(rnd_type.values, RecordSchema):
-                        fake_data[field_name] = {f'key{i}': generate_fake_data(rnd_type.values) for i in range(3)}
-                    else:
-                        fake_data[field_name] = {f'key{i}': process_primitive_type(rnd_type.values) for i in
-                                                 range(3)}
-                elif isinstance(rnd_type, RecordSchema):
-                    fake_data[field_name] = generate_fake_data(rnd_type)
-                elif isinstance(rnd_type, EnumSchema):
-                    fake_data[field_name] = random.choice(rnd_type.symbols)
-                else:
-                    fake_data[field_name] = generate_fake_data(field_type)
+        return generate_record_data(schema)
+    elif isinstance(schema, ArraySchema):
+        return generate_array_data(schema)
+    elif isinstance(schema, MapSchema):
+        return generate_map_data(schema)
+    elif isinstance(schema, PrimitiveSchema):
+        return process_primitive_type(schema)
+    elif isinstance(schema, EnumSchema):
+        return random.choice(schema.symbols)
+    elif isinstance(schema, UnionSchema):
+        return generate_union_data(schema)
+    else:
+        raise ValueError(f"Unsupported schema type: {schema}")
 
-            else:
-                raise ValueError
-    return fake_data
+
+def generate_record_data(schema):
+    data = {}
+    for field in schema.fields:
+        field_name = field.name
+        field_type = field.type
+
+        if schema.namespace and isinstance(field_type, RecordSchema):
+            field_name = f"{schema.namespace}.{field_name}"
+
+        data[field_name] = generate_fake_data(field_type)
+
+    return data
+
+
+def generate_array_data(schema):
+    items_schema = schema.items
+    array_length = 3  # Consider making this configurable
+
+    return [generate_fake_data(items_schema) for _ in range(array_length)]
+
+
+def generate_map_data(schema):
+    values_schema = schema.values
+    map_size = 3  # Consider making this configurable
+
+    return {f'key{i}': generate_fake_data(values_schema) for i in range(map_size)}
+
+
+def generate_union_data(schema):
+    non_null_types = [t for t in schema.schemas if t.type != 'null']
+    rnd_type = random.choice(non_null_types)
+
+    return generate_fake_data(rnd_type)
 
 
 def process_primitive_type(field_type):
@@ -138,9 +117,9 @@ def process_primitive_type(field_type):
 
 if __name__ == "__main__":
     path = os.path.realpath(os.path.dirname(__file__))
-    schema_parse = avro.schema.parse(open(f"{path}/schemas/inputs/fca-loan-drawdowns.avsc", "rb").read())
+    schema_parse = avro.schema.parse(open(f"{path}/schemas/inputs/fca-6.avsc", "rb").read())
 
     data_payload = generate_fake_data(schema_parse)
 
-    with open(f"{path}/schemas/outputs/khan.json", "w") as f:
+    with open(f"{path}/schemas/outputs/fca-6-payload.json", "w") as f:
         f.write(json.dumps(data_payload, indent=4))
