@@ -1,0 +1,37 @@
+{
+  "type": "record",
+  "name": "ComplexUnion",
+  "fields": [
+    {
+      "name": "complex_union",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "RecordA",
+          "fields": [
+            {
+              "name": "field_a",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "RecordB",
+          "fields": [
+            {
+              "name": "field_b",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "type": "fixed",
+          "name": "FixedBytes",
+          "size": 8
+        }
+      ]
+    }
+  ]
+}

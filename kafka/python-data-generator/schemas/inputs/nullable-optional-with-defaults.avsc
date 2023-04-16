@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "NullableOptional",
+  "fields": [
+    {
+      "name": "nullable_field",
+      "type": ["null", "string"]
+    },
+    {
+      "name": "optional_field",
+      "type": "string",
+      "default": "default_value"
+    }
+  ]
+}

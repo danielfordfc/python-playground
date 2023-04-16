@@ -1,0 +1,83 @@
+{
+    "nested_map": {
+        "key0": [
+            {
+                "key0": [
+                    "fceeabdbab",
+                    "facaaebcbb"
+                ],
+                "key1": [
+                    "bffcbcecac"
+                ],
+                "key2": [
+                    "ebdcdfecaa"
+                ]
+            },
+            {
+                "key0": [
+                    "ebfcedbfac"
+                ],
+                "key1": [
+                    "beedbdccce"
+                ],
+                "key2": [
+                    "caacdfebdc",
+                    "cfcbacaeeb"
+                ]
+            }
+        ],
+        "key1": [
+            {
+                "key0": [
+                    "fdaacbbbde"
+                ],
+                "key1": [
+                    "acfafebafa",
+                    "faecbefada"
+                ],
+                "key2": [
+                    "dbadbcabda"
+                ]
+            },
+            {
+                "key0": [
+                    "bfafadcfab",
+                    "acfefeaaff"
+                ],
+                "key1": [
+                    "adebcfcafe"
+                ],
+                "key2": [
+                    "fadfbefdea"
+                ]
+            }
+        ],
+        "key2": [
+            {
+                "key0": [
+                    "cafddefdec"
+                ],
+                "key1": [
+                    "dadedaafde",
+                    "cffbebcdaa"
+                ],
+                "key2": [
+                    "bddfdfffad"
+                ]
+            },
+            {
+                "key0": [
+                    "adbbdabfee",
+                    "cdfaacdbbc"
+                ],
+                "key1": [
+                    "cdabbdabef",
+                    "accaeaecad"
+                ],
+                "key2": [
+                    "cbcabeccab"
+                ]
+            }
+        ]
+    }
+}

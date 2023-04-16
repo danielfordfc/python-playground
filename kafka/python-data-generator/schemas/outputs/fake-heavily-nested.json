@@ -1,0 +1,96 @@
+{
+    "field1": [
+        {
+            "subfield1": 1494395293,
+            "subfield2": [
+                {
+                    "subfield3": "eebcfefefa",
+                    "subfield4": true
+                },
+                {
+                    "subfield3": "ebbafdceca",
+                    "subfield4": true
+                }
+            ]
+        },
+        {
+            "subfield1": 2082899488,
+            "subfield2": [
+                {
+                    "subfield3": "cfdaeecdfc",
+                    "subfield4": true
+                },
+                {
+                    "subfield3": "eededbbbdb",
+                    "subfield4": false
+                }
+            ]
+        }
+    ],
+    "field2": {
+        "key0": [
+            {
+                "subfield5": 1235635620,
+                "subfield6": [
+                    {
+                        "subfield7": "abfecdcada",
+                        "subfield8": 2113509842
+                    }
+                ]
+            },
+            {
+                "subfield5": 1873324141,
+                "subfield6": [
+                    {
+                        "subfield7": "dacfdffcdd",
+                        "subfield8": 201184314
+                    }
+                ]
+            }
+        ],
+        "key1": [
+            {
+                "subfield5": 423261482,
+                "subfield6": [
+                    {
+                        "subfield7": "aeeddaccbb",
+                        "subfield8": 1554851698
+                    }
+                ]
+            },
+            {
+                "subfield5": 272168949,
+                "subfield6": [
+                    {
+                        "subfield7": "acfdcafabc",
+                        "subfield8": 1132824212
+                    },
+                    {
+                        "subfield7": "deafadedfe",
+                        "subfield8": 1085771404
+                    }
+                ]
+            }
+        ],
+        "key2": [
+            {
+                "subfield5": 134483210,
+                "subfield6": [
+                    {
+                        "subfield7": "fbcfbbddba",
+                        "subfield8": 146605776
+                    }
+                ]
+            },
+            {
+                "subfield5": 592707649,
+                "subfield6": [
+                    {
+                        "subfield7": "cefbddefcf",
+                        "subfield8": 521697547
+                    }
+                ]
+            }
+        ]
+    }
+}

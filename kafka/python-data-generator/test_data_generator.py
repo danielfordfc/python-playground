@@ -10,6 +10,8 @@ import json
 
 from avro.schema import *
 
+import glob
+
 
 """
 The test performs the following steps:
@@ -81,21 +83,13 @@ def fit_expected_schema(qualified_schema):
 
 
 def test_generate_fake_data():
-    # Define the Avro schemas to test
-    path = os.path.dirname(os.path.abspath(__file__))
+    # Define the path to the Avro schemas
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas/inputs")
 
-    schemas = [
-        avro.schema.parse(open(f"{path}/schemas/inputs/user_generic.avsc", "rb").read()),
-        avro.schema.parse(open(f"{path}/schemas/inputs/user_specific.avsc", "rb").read()),
-        avro.schema.parse(open(f"{path}/schemas/inputs/fca-6.avsc", "rb").read()),
-        avro.schema.parse(open(f"{path}/schemas/inputs/fca-loan-drawdowns.avsc", "rb").read()),
-        avro.schema.parse(open(f"{path}/schemas/inputs/fca-originations-offer-status-updated.avsc", "rb").read()),
-        avro.schema.parse(open(f"{path}/schemas/inputs/fake-nested-unions.avsc", "rb").read()),
-        avro.schema.parse(open(f"{path}/schemas/inputs/fake-heavily-nested.avsc", "rb").read()),
-        avro.schema.parse(open(f"{path}/schemas/inputs/fake-namespace-schema.avsc", "rb").read()),
+    # Load all the Avro schemas in the "inputs" folder
+    schema_files = glob.glob(os.path.join(path, "*.avsc"))
+    schemas = [avro.schema.parse(open(file, "rb").read()) for file in schema_files]
 
-        #avro.schema.parse(open(f"{path}/schemas/inputs/fca-originations-loan-application.avsc", "rb").read())
-    ]
     for schema in schemas:
 
         fake_data = generate_fake_data(schema)

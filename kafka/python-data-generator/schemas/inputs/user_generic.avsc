@@ -5,10 +5,11 @@
         {
             "name": "name",
             "type": "string"
+
         },
         {
             "name": "favorite_number",
-            "type": "long"
+            "type": "int"
         },
         {
             "name": "favorite_color",
