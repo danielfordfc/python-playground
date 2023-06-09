@@ -134,3 +134,8 @@ dmypy.json
 kafka/python-data-generator/schemas/inputs/fca*
 kafka/python-data-generator/schemas/inputs/outputs/fca*
 kafka/python-data-generator/schemas/outputs/fca-*
+.metals/
+pyspark/checkpoint/
+pyspark/output/
+pyspark/hudi_output/
+pyspark/hudi_checkpoint/
