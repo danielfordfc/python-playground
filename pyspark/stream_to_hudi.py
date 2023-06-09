@@ -6,6 +6,10 @@ def main(base_dir, topic, output):
     spark = SparkSession.builder \
         .appName("kafka-example") \
         .getOrCreate()
+    
+    print(f"base_dir: {base_dir}")
+    print(f"topic: {topic}")
+    print(f"output: {output}")
 
     try:
         #get info on spark session
@@ -22,7 +26,7 @@ def main(base_dir, topic, output):
         query = kafka_df \
         .writeStream \
         .format("hudi") \
-        .option("checkpointLocation", f"{base_dir}/{table_name}") \
+        .option("checkpointLocation", f"{base_dir}/{output}/{table_name}") \
         .option("hoodie.table.name", table_name) \
         .option("hoodie.datasource.write.precombine.field", "timestamp") \
         .option("hoodie.datasource.write.recordkey.field", "timestamp") \
@@ -31,7 +35,7 @@ def main(base_dir, topic, output):
         .option("hoodie.datasource.write.table.type", "COPY_ON_WRITE") \
         .option("hoodie.datasource.write.keygenerator.class", "org.apache.hudi.keygen.NonpartitionedKeyGenerator") \
         .outputMode("append") \
-        .option("path", f"{base_dir}/{table_name}") \
+        .option("path", f"{base_dir}/{output}/{table_name}") \
         .start() 
 
         query.awaitTermination()
@@ -44,9 +48,9 @@ def main(base_dir, topic, output):
 if __name__ == "__main__":
 
     #handle positional args from command line from the form    stream_to_hudi.py $base_path $topic $output
-    base_dir = sys.argv[0]
-    topic = sys.argv[1]
-    output = sys.argv[2]
+    base_dir = sys.argv[1]
+    topic = sys.argv[2]
+    output = sys.argv[3]
     
 
     main(base_dir, topic, output)
