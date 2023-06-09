@@ -2,25 +2,38 @@ from pyspark.sql import SparkSession
 
 def main():
     # set up consumer
-    spark = SparkSession \
-        .builder \
-        .appName("test") \
-        .config("spark.sql.debug.maxToStringFields", "100") \
+    # scala_version = '2.12'
+    # spark_version = '3.3.2'
+    # TODO: Ensure match above values match the correct versions
+    # packages = [
+    #     f'org.apache.spark:spark-sql-kafka-0-10_{scala_version}:{spark_version}',
+    #     'org.apache.kafka:kafka-clients:3.2.1'
+    # ]
+    spark = SparkSession.builder \
+        .appName("kafka-example") \
         .getOrCreate()
 
+    #get info on spark session
     kafka_df = spark.readStream \
         .format("kafka") \
         .option("kafka.bootstrap.servers", "localhost:9092") \
-        .option("kafka.security.protocol", "SSL") \
-        .option("failOnDataLoss", "false") \
-        .option("subscribe", "GDP-1168-confluent-example") \
+        .option("subscribe", "test1-pageviews") \
         .option("includeHeaders", "true") \
         .option("startingOffsets", "earliest") \
-        .option("spark.streaming.kafka.maxRatePerPartition", "50") \
         .load()
     
-    kafka_df.show() # this is just to test if it works
+    # write the stream out to the console
+    query = kafka_df \
+    .writeStream \
+    .outputMode("append") \
+    .format("json") \
+    .option("path", "output") \
+    .option("checkpointLocation", "checkpoint") \
+    .start()
 
+    query.awaitTermination()
+
+        
 
 if __name__ == "__main__":
     main()
