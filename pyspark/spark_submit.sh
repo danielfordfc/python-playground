@@ -1,6 +1,6 @@
 #!/bin/bash
 
-base_path_default="file:///tmp/warehouse/spark/$output/"
+base_path_default="file:///tmp/warehouse/spark/$output"
 LOG4J_PATH_default="log4j2.properties"
 DEBUG_BOOL_default="false"
 
