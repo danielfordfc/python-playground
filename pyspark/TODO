@@ -1,0 +1,8 @@
+1. Get the key and value decoded into a payload, and have that be the hudi table data.
+2. Better streamline this local development setup and have it clear enough to be able to be used by other developers.
+3. Mimic the behaviour in local to how the deltastreamer handled file management in s3. KeyGen class and hive style partitioning
+4. Spark needs to talk to Glue to sync the hive catalog to Glue
+    In Spark, there's an option to set the catalog, we can set it to Glue/Hive
+    Data playground account and maybe add s3 backend for this data. Get this syncing to the glue catalog.
+5. Schema evolution needs to be managed by this process.
+    This doesn't need to be done right now, but we should test its behaviour.

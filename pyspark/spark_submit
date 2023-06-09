@@ -1,8 +1,0 @@
-spark-submit \
-   --deploy-mode client \
-   --driver-memory 1g \
-   --executor-memory 1g \
-   --executor-cores 1 \
-   --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.2,org.apache.kafka:kafka-clients:3.2.1 \
-   --class org.apache.spark.examples.SparkPi \
-   hello_world.py
