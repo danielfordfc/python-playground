@@ -1,0 +1,8 @@
+spark-submit \
+   --verbose \
+   --deploy-mode client \
+   --driver-memory 1g \
+   --executor-memory 1g \
+   --executor-cores 1  \
+   --class org.apache.spark.examples.SparkPi \
+   hello_world.py 
