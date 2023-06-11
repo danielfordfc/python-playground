@@ -20,4 +20,39 @@ pyspark on spark 3.3.2 and scala 2.12.x was used for this project and is set in 
 
 1. Create a topic in the control center called `hudi_topic` by following step 2 of the linked guide
 2. Create a DataGenSourceConnector in the control center by following step 3 of the linked guide.
-3. 
+3. Get some data in it!
+
+4. Run the following command to stream the data from kafka to hudi from this dir:
+
+```bash
+bash spark_submit.sh -o hudi -t {topic_name}
+```
+
+5. If required, to clear your hudi table, run the following command:
+
+```bash
+rm -rf /tmp/warehouse/spark/hudi/{topic_name}
+```
+
+### Query Hudi
+
+```bash
+ spark-shell \
+     --packages org.apache.hudi:hudi-spark3.3-bundle_2.12:0.12.2 \
+     --conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
+     --conf spark.sql.catalog.spark_catalog=org.apache.spark.sql.hudi.catalog.HoodieCatalog \
+     --conf spark.sql.extensions=org.apache.spark.sql.hudi.HoodieSparkSessionExtension \
+```
+
+```scala
+ val topic = "topic-name"
+ val tableName = () => topic.replaceAll("-", "_")
+ val basePath = s"file:///tmp/warehouse/spark/hudi/${tableName()}"
+ val df = spark.read.format("hudi").load(basePath)
+ df.createOrReplaceTempView(s"hudi_${tableName()}")
+
+ // spark.sql("select viewtime, userid, pageid from hudi_transactional").show()
+
+ spark.sql(s"select _hoodie_commit_time, _hoodie_commit_seqno, _hoodie_record_key, _hoodie_partition_path from hudi_${tableName}").show()
+
+ spark.sql(s"select * from hudi_${tableName}").show()
