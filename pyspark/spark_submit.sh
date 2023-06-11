@@ -68,15 +68,3 @@ spark-submit \
    --class org.apache.spark.examples.SparkPi \
    stream_to_hudi.py $base_path $topic $output
 
-
-
-
-# "{\"fields\": [{\"name\": \"name\",\"type\": \"string\", \"logicalType\": \"uuid\"},{\"name\": \"favorite_number\",\"type\": \"long\"},{\"name\":\"date\",\"type\":{\"type\":\"int\",\"logicalType\":\"date\",\"arg.properties\":{\"range\":{\"min\":1674909551,\"max\":1676909551}}}},{\"name\": \"favorite_color\", \"type\": \"string\"}],\"name\": \"User\",\"namespace\": \"confluent.io.examples.serialization.avro\",\"type\": \"record\"}"
-
-
-
-# spark-shell \
-#     --packages org.apache.hudi:hudi-spark3.3-bundle_2.12:0.12.2 \
-#     --conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
-#     --conf spark.sql.catalog.spark_catalog=org.apache.spark.sql.hudi.catalog.HoodieCatalog \
-#     --conf spark.sql.extensions=org.apache.spark.sql.hudi.HoodieSparkSessionExtension \

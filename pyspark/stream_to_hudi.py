@@ -1,7 +1,34 @@
 from pyspark.sql import SparkSession
+from pyspark.sql.avro.functions import from_avro
+from pyspark.sql.functions import col, to_json
+
+
 import sys
 
 def main(base_dir, topic, output):
+
+    avroSchemaStr = """
+    {
+    "connect.name": "ksql.pageviews",
+    "fields": [
+        {
+        "name": "viewtime",
+        "type": "long"
+        },
+        {
+        "name": "userid",
+        "type": "string"
+        },
+        {
+        "name": "pageid",
+        "type": "string"
+        }
+    ],
+    "name": "pageviews",
+    "namespace": "ksql",
+    "type": "record"
+    }
+    """
 
     spark = SparkSession.builder \
         .appName("kafka-example") \
@@ -11,37 +38,43 @@ def main(base_dir, topic, output):
     print(f"topic: {topic}")
     print(f"output: {output}")
 
-    try:
-        #get info on spark session
-        kafka_df = spark.readStream \
-            .format("kafka") \
-            .option("kafka.bootstrap.servers", "localhost:9092") \
-            .option("subscribe", topic) \
-            .option("includeHeaders", "true") \
-            .option("startingOffsets", "earliest") \
-            .load()
+    #get info on spark session
+    kafka_df = spark.readStream \
+        .format("kafka") \
+        .option("kafka.bootstrap.servers", "localhost:9092") \
+        .option("subscribe", topic) \
+        .option("includeHeaders", "true") \
+        .option("startingOffsets", "earliest") \
+        .load()
 
-        table_name = topic.replace('-', '_')
+    table_name = topic.replace('-', '_')
 
-        query = kafka_df \
-        .writeStream \
-        .format("hudi") \
-        .option("checkpointLocation", f"{base_dir}/{output}/{table_name}") \
-        .option("hoodie.table.name", table_name) \
-        .option("hoodie.datasource.write.precombine.field", "timestamp") \
-        .option("hoodie.datasource.write.recordkey.field", "timestamp") \
-        .option("hoodie.merge.allow.duplicate.on.inserts", True) \
-        .option("hoodie.datasource.write.operation", "insert") \
-        .option("hoodie.datasource.write.table.type", "COPY_ON_WRITE") \
-        .option("hoodie.datasource.write.keygenerator.class", "org.apache.hudi.keygen.NonpartitionedKeyGenerator") \
-        .outputMode("append") \
-        .option("path", f"{base_dir}/{output}/{table_name}") \
-        .start() 
+    # Deserialize from Avro format
+    data = kafka_df \
+    .withColumn("value", from_avro(col("value"), avroSchemaStr)) \
+    .withColumn("value", to_json(col("value")))
+    
+    
+    data.printSchema()
 
-        query.awaitTermination()
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        sys.exit(1)
+    # deserialize the kafka message using the avro schema
+
+    query = data \
+    .writeStream \
+    .format("hudi") \
+    .option("checkpointLocation", f"{base_dir}/{output}/{table_name}") \
+    .option("hoodie.table.name", table_name) \
+    .option("hoodie.datasource.write.precombine.field", "timestamp") \
+    .option("hoodie.datasource.write.recordkey.field", "timestamp") \
+    .option("hoodie.merge.allow.duplicate.on.inserts", True) \
+    .option("hoodie.datasource.write.operation", "insert") \
+    .option("hoodie.datasource.write.table.type", "COPY_ON_WRITE") \
+    .option("hoodie.datasource.write.keygenerator.class", "org.apache.hudi.keygen.NonpartitionedKeyGenerator") \
+    .outputMode("append") \
+    .option("path", f"{base_dir}/{output}/{table_name}") \
+    .start() 
+
+    query.awaitTermination()
 
         
 
