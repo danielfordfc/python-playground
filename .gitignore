@@ -139,3 +139,4 @@ pyspark/checkpoint/
 pyspark/output/
 pyspark/hudi_output/
 pyspark/hudi_checkpoint/
+metastore_db/
