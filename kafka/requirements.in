@@ -7,3 +7,6 @@ faker
 faker-schema
 avro-json-serializer
 avro-python3
+six
+requests
+jsonschema
