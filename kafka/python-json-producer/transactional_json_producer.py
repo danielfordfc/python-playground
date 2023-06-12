@@ -1,8 +1,26 @@
-# A simple example demonstrating use of AvroSerializer.
-# Heavily inspired by the confluent-kafka-python examples.
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright 2020 Confluent Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+# A simple example demonstrating use of JSONSerializer.
+
+#STOLEN
 
 import argparse
-import os
 from uuid import uuid4
 
 from six.moves import input
@@ -10,19 +28,22 @@ from six.moves import input
 from confluent_kafka import Producer
 from confluent_kafka.serialization import StringSerializer, SerializationContext, MessageField
 from confluent_kafka.schema_registry import SchemaRegistryClient
-from confluent_kafka.schema_registry.avro import AvroSerializer
+from confluent_kafka.schema_registry.json_schema import JSONSerializer
 
-from confluent_kafka.admin import AdminClient, NewTopic
 import faker
 
 
 class User(object):
     """
     User record
+
     Args:
         name (str): User's name
+
         favorite_number (int): User's favorite number
+
         favorite_color (str): User's favorite color
+
         address(str): User's address; confidential
     """
 
@@ -37,10 +58,13 @@ class User(object):
 def user_to_dict(user, ctx):
     """
     Returns a dict representation of a User instance for serialization.
+
     Args:
         user (User): User instance.
+
         ctx (SerializationContext): Metadata pertaining to the serialization
             operation.
+
     Returns:
         dict: Dict populated with user attributes to be serialized.
     """
@@ -53,17 +77,11 @@ def user_to_dict(user, ctx):
 
 def delivery_report(err, msg):
     """
-    Reports the failure or success of a message delivery.
+    Reports the success or failure of a message delivery.
+
     Args:
         err (KafkaError): The error that occurred on None on success.
         msg (Message): The message that was produced or failed.
-    Note:
-        In the delivery report callback the Message.key() and Message.value()
-        will be the binary format as encoded by any configured Serializers and
-        not the same object that was passed to produce().
-        If you wish to pass the original object(s) for key and value to delivery
-        report callback we recommend a bound callback or lambda where you pass
-        the objects along.
     """
 
     if err is not None:
@@ -75,39 +93,50 @@ def delivery_report(err, msg):
 
 def main(args):
     topic = args.topic
-    is_specific = args.specific == "true"
+    msgs = args.num_messages
 
-    if is_specific:
-        schema = "user_specific.avsc"
-    else:
-        schema = "user_generic.avsc"
-
-    path = os.path.realpath(os.path.dirname(__file__))
-    with open(f"{path}/schemas/inputs/{schema}") as f:
-        schema_str = f.read()
-
+    schema_str = """
+    {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "description": "A Confluent Kafka Python User",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "User's name",
+          "type": "string"
+        },
+        "favorite_number": {
+          "description": "User's favorite number",
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "favorite_color": {
+          "description": "User's favorite color",
+          "type": "string"
+        }
+      },
+      "required": [ "name", "favorite_number", "favorite_color" ]
+    }
+    """
     schema_registry_conf = {'url': args.schema_registry}
     schema_registry_client = SchemaRegistryClient(schema_registry_conf)
 
-    avro_serializer = AvroSerializer(schema_registry_client,
-                                     schema_str,
-                                     user_to_dict)
-
     string_serializer = StringSerializer('utf_8')
+    json_serializer = JSONSerializer(schema_str, schema_registry_client, user_to_dict)
 
-    producer_conf = {"bootstrap.servers": args.bootstrap_servers}
-    producer = Producer(producer_conf)
-
-    admin = AdminClient(producer_conf)
-
-    #create topic if not exist
-    if admin.list_topics().topics.get(topic) is None:
-        admin.create_topics([NewTopic(topic, num_partitions=1)])
-
-    print("Producing user records to topic {}. ^C to exit.".format(topic))
+    producer = Producer({
+        'bootstrap.servers': args.bootstrap_servers,
+        'transactional.id': "trans-id",
+        })
+    
     fake = faker.Faker()
 
-    for i in range(int(args.msgs)):
+    producer.init_transactions()
+    producer.begin_transaction()
+
+    print("Producing user records to topic {}. ^C to exit.".format(topic))
+    for i in range(msgs):
         # Serve on_delivery callbacks from previous calls to produce()
         producer.poll(0.0)
         try:
@@ -121,7 +150,7 @@ def main(args):
                         favorite_number=user_favorite_number)
             producer.produce(topic=topic,
                              key=string_serializer(str(uuid4())),
-                             value=avro_serializer(user, SerializationContext(topic, MessageField.VALUE)),
+                             value=json_serializer(user, SerializationContext(topic, MessageField.VALUE)),
                              on_delivery=delivery_report)
             
         except KeyboardInterrupt:
@@ -131,23 +160,18 @@ def main(args):
             continue
 
     print("\nFlushing records...")
+    producer.commit_transaction()
     producer.flush()
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="AvroSerializer example")
+    parser = argparse.ArgumentParser(description="JSONSerailizer example")
     parser.add_argument('-b', dest="bootstrap_servers", required=True,
                         help="Bootstrap broker(s) (host[:port])")
     parser.add_argument('-s', dest="schema_registry", required=True,
                         help="Schema Registry (http(s)://host[:port]")
-    parser.add_argument('-t', dest="topic", default="example_serde_avro",
+    parser.add_argument('-t', dest="topic", default="example_serde_json",
                         help="Topic name")
-    parser.add_argument('-p', dest="specific", default="true",
-                        help="Avro specific record"),
-    parser.add_argument('-n', dest="msgs", default=10),
-    parser.add_argument('-su', dest="sasl_username",
-                        help="sasl_username")
-    parser.add_argument('-sp', dest="sasl_password",
-                        help="sasl_password")
+    parser.add_argument('-n', dest="num_messages", type=int, default=10, help="Number of messages to produce")
 
     main(parser.parse_args())
