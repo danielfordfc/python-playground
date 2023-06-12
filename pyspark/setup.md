@@ -15,6 +15,8 @@ Ignore the section in point 1 asking you to wget the docker-compose.yml, as this
 You should be able to now follow steps 2 and 3 of the guide to get the infra up and running, create a topic and a connector.
 
 pyspark on spark 3.3.2 and scala 2.12.x was used for this project and is set in the --packages argument in the spark-submit command.
+- Download and install spark 3.3.2 with scala 2.12: https://spark.apache.org/downloads
+- Install pyspark using `pip install pyspark`
 
 python-playground/kafka/python-avro-producer
 ### Utility 1 - Producing to an Avro topic
