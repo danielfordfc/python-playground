@@ -16,25 +16,65 @@ You should be able to now follow steps 2 and 3 of the guide to get the infra up 
 
 pyspark on spark 3.3.2 and scala 2.12.x was used for this project and is set in the --packages argument in the spark-submit command.
 
-### Stream to Hudi from kafka
+python-playground/kafka/python-avro-producer
+### Utility 1 - Producing to an Avro topic
 
-1. Create a topic in the control center called `hudi_topic` by following step 2 of the linked guide
-2. Create a DataGenSourceConnector in the control center by following step 3 of the linked guide.
-3. Get some data in it!
+```bash
+    cd python-playground/kafka/python-avro-producer 
+```
 
-4. Run the following command to stream the data from kafka to hudi from this dir:
+```bash
+    python3 confluent_avro_producer.py -b "localhost:9092" -s "http://localhost:8081" -t {topic name}  -n 4
+```
+
+-b = bootstrap server
+-s = schema registry
+-t = topic name
+-n = number of messages to produce
+
+### Utility 2 - Producing to a transactional topic
+
+```bash
+    python3 transactional_json_producer.py -b "localhost:9092" -s "http://localhost:8081" -t {topic name}  -n 4
+```
+
+-b = bootstrap server
+-s = schema registry
+-t = topic name
+-n = number of messages to produce
+
+Spam this a few of times and you'll see the transactional messages arrive in your topic in the control center.
+
+### Utility 3 - Stream to Hudi from kafka
+
+1. This part assumes you've got a topic, and you're ready to stream it to a hudi table!
+2. Run the following command to stream the data from kafka to hudi from this dir:
+
+Assuming you're cd into the pyspark/ dir:
 
 ```bash
 bash spark_submit.sh -o hudi -t {topic_name}
 ```
 
-5. If required, to clear your hudi table, run the following command:
+-o = output dir (required)
+-t = topic name (required)
+-b = base path (optional) - defaults to /tmp/warehouse/spark/{output dir}
+-l = log4j path (optional) - defaults to local log4j2.properties file
+-d = debug bool (optional) - defaults to false - set to true to enable debug logging
+
+3. If required, to clear all your hudi tables, run the following command:
 
 ```bash
-rm -rf /tmp/warehouse/spark/hudi/{topic-name}
+rm -rf /tmp/warehouse/spark/hudi
+
+OR for individual tables...
+
+rm -rf /tmp/warehouse/spark/hudi/{table_name}
 ```
 
-### Query Hudi
+### Querying the Hudi table
+
+Run the following to enter the spark-shell with the hudi package and extensions:
 
 ```bash
  spark-shell --packages org.apache.hudi:hudi-spark3.3-bundle_2.12:0.12.2 \
@@ -47,8 +87,11 @@ rm -rf /tmp/warehouse/spark/hudi/{topic-name}
 --conf 'spark.hadoop.spark.sql.caseSensitive=false'
 ```
 
+
+Then run the following to query the table:
+
 ```scala
-    val topic = "your-topic-name" // change this to the topic you want to query
+    val topic = "your-topic-name" // change this to the topic you want to query, rest of this block should be copy paste...
     val tableName = topic.replaceAll("-", "_")
     val basePath = s"file:///tmp/warehouse/spark/hudi/${tableName}"
     val df = spark.read.format("hudi").load(basePath)

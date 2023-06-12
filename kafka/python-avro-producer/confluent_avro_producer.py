@@ -13,6 +13,7 @@ from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroSerializer
 
 from confluent_kafka.admin import AdminClient, NewTopic
+import faker
 
 
 class User(object):
@@ -94,13 +95,7 @@ def main(args):
 
     string_serializer = StringSerializer('utf_8')
 
-    producer_conf = {"bootstrap.servers": args.bootstrap_servers,
-                     "security.protocol": "SASL_SSL",
-                    "sasl.mechanism": "PLAIN",
-                    "sasl.username": args.sasl_username,
-                    "sasl.password": args.sasl_password
-                    }
-
+    producer_conf = {"bootstrap.servers": args.bootstrap_servers}
     producer = Producer(producer_conf)
 
     admin = AdminClient(producer_conf)
@@ -110,16 +105,16 @@ def main(args):
         admin.create_topics([NewTopic(topic, num_partitions=1)])
 
     print("Producing user records to topic {}. ^C to exit.".format(topic))
+    fake = faker.Faker()
 
-
-    while True:
+    for i in range(int(args.msgs)):
         # Serve on_delivery callbacks from previous calls to produce()
         producer.poll(0.0)
         try:
-            user_name = input("Enter name: ")
-            user_address = input("Enter address: ")
-            user_favorite_number = int(input("Enter favorite number: "))
-            user_favorite_color = input("Enter favorite color: ")
+            user_name = fake.name()
+            user_address = fake.address()
+            user_favorite_number = int(fake.random_number())
+            user_favorite_color = fake.color_name()
             user = User(name=user_name,
                         address=user_address,
                         favorite_color=user_favorite_color,
@@ -128,6 +123,7 @@ def main(args):
                              key=string_serializer(str(uuid4())),
                              value=avro_serializer(user, SerializationContext(topic, MessageField.VALUE)),
                              on_delivery=delivery_report)
+            
         except KeyboardInterrupt:
             break
         except ValueError:
@@ -147,7 +143,8 @@ if __name__ == '__main__':
     parser.add_argument('-t', dest="topic", default="example_serde_avro",
                         help="Topic name")
     parser.add_argument('-p', dest="specific", default="true",
-                        help="Avro specific record")
+                        help="Avro specific record"),
+    parser.add_argument('-n', dest="msgs", default=10),
     parser.add_argument('-su', dest="sasl_username",
                         help="sasl_username")
     parser.add_argument('-sp', dest="sasl_password",
