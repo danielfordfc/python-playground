@@ -37,22 +37,31 @@ rm -rf /tmp/warehouse/spark/hudi/{topic_name}
 ### Query Hudi
 
 ```bash
- spark-shell \
-     --packages org.apache.hudi:hudi-spark3.3-bundle_2.12:0.12.2 \
-     --conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
-     --conf spark.sql.catalog.spark_catalog=org.apache.spark.sql.hudi.catalog.HoodieCatalog \
-     --conf spark.sql.extensions=org.apache.spark.sql.hudi.HoodieSparkSessionExtension \
+ spark-shell --packages org.apache.hudi:hudi-spark3.3-bundle_2.12:0.12.2 \
+--conf 'spark.serializer=org.apache.spark.serializer.KryoSerializer' \
+--conf 'spark.sql.extensions=org.apache.spark.sql.hudi.HoodieSparkSessionExtension' \
+--conf 'spark.sql.catalog.spark_catalog=org.apache.spark.sql.hudi.catalog.HoodieCatalog' \
+--conf 'spark.hadoop.spark.sql.legacy.parquet.nanosAsLong=false' \
+--conf 'spark.hadoop.spark.sql.parquet.binaryAsString=false' \
+--conf 'spark.hadoop.spark.sql.parquet.int96AsTimestamp=true' \
+--conf 'spark.hadoop.spark.sql.caseSensitive=false'
 ```
 
+
 ```scala
- val topic = "topic-name"
- val tableName = () => topic.replaceAll("-", "_")
- val basePath = s"file:///tmp/warehouse/spark/hudi/${tableName()}"
+ val topic = "test2-topic"
+ val tableName = "test2_topic"
+
+ val basePath = s"file:///Users/daniel.ford/Documents/GitHub/danielfordfc/python-playground/pyspark/hudi_output/test2-topic"
  val df = spark.read.format("hudi").load(basePath)
- df.createOrReplaceTempView(s"hudi_${tableName()}")
+ 
+ val view = df.createOrReplaceTempView(s"hudi_test2_topic")
 
  // spark.sql("select viewtime, userid, pageid from hudi_transactional").show()
+ // file:///Users/daniel.ford/Documents/GitHub/danielfordfc/python-playground/pyspark/hudi_output/test2-topic
 
- spark.sql(s"select _hoodie_commit_time, _hoodie_commit_seqno, _hoodie_record_key, _hoodie_partition_path from hudi_${tableName}").show()
+ spark.sql(s"select * from hudi_test2_topic").show()
 
- spark.sql(s"select * from hudi_${tableName}").show()
+ spark.sql(s"select count(*) from hudi_test2_topic").show()
+
+ spark.sql("SHOW tables").show()
