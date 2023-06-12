@@ -1,34 +1,16 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.avro.functions import from_avro
-from pyspark.sql.functions import col, to_json
+#from pyspark.sql.avro.functions import from_avro
+from pyspark.sql.functions import from_json, current_timestamp
+from pyspark.sql.types import TimestampType, StructType, StringType, IntegerType
 
 
 import sys
 
 def main(base_dir, topic, output):
 
-    avroSchemaStr = """
-    {
-    "connect.name": "ksql.pageviews",
-    "fields": [
-        {
-        "name": "viewtime",
-        "type": "long"
-        },
-        {
-        "name": "userid",
-        "type": "string"
-        },
-        {
-        "name": "pageid",
-        "type": "string"
-        }
-    ],
-    "name": "pageviews",
-    "namespace": "ksql",
-    "type": "record"
-    }
-    """
+    #build spark schema
+
+    # schema = StructType().add("name", StringType()).add("favorite_number", IntegerType()).add("favorite_color", StringType())
 
     spark = SparkSession.builder \
         .appName("kafka-example") \
@@ -49,17 +31,14 @@ def main(base_dir, topic, output):
 
     table_name = topic.replace('-', '_')
 
-    # Deserialize from Avro format
-    data = kafka_df \
-    .withColumn("value", from_avro(col("value"), avroSchemaStr)) \
-    .withColumn("value", to_json(col("value")))
-    
-    
-    data.printSchema()
+    # deserialize value field that is JSONSerializer encoded
+    kafka_df = kafka_df.selectExpr("offset", "partition", "CAST(value AS STRING)", "CAST(timestamp AS TIMESTAMP)")
 
+    # parsed_df = kafka_df.withColumn("value", from_json("value", schema)) \
+    # .withColumn("ts", current_timestamp().cast(TimestampType()))
     # deserialize the kafka message using the avro schema
 
-    query = data \
+    query = kafka_df \
     .writeStream \
     .format("hudi") \
     .option("checkpointLocation", f"{base_dir}/{output}/{table_name}") \

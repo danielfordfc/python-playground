@@ -31,7 +31,7 @@ bash spark_submit.sh -o hudi -t {topic_name}
 5. If required, to clear your hudi table, run the following command:
 
 ```bash
-rm -rf /tmp/warehouse/spark/hudi/{topic_name}
+rm -rf /tmp/warehouse/spark/hudi/{topic-name}
 ```
 
 ### Query Hudi
@@ -47,21 +47,11 @@ rm -rf /tmp/warehouse/spark/hudi/{topic_name}
 --conf 'spark.hadoop.spark.sql.caseSensitive=false'
 ```
 
-
 ```scala
- val topic = "test2-topic"
- val tableName = "test2_topic"
-
- val basePath = s"file:///Users/daniel.ford/Documents/GitHub/danielfordfc/python-playground/pyspark/hudi_output/test2-topic"
- val df = spark.read.format("hudi").load(basePath)
- 
- val view = df.createOrReplaceTempView(s"hudi_test2_topic")
-
- // spark.sql("select viewtime, userid, pageid from hudi_transactional").show()
- // file:///Users/daniel.ford/Documents/GitHub/danielfordfc/python-playground/pyspark/hudi_output/test2-topic
-
- spark.sql(s"select * from hudi_test2_topic").show()
-
- spark.sql(s"select count(*) from hudi_test2_topic").show()
-
- spark.sql("SHOW tables").show()
+    val topic = "your-topic-name" // change this to the topic you want to query
+    val tableName = topic.replaceAll("-", "_")
+    val basePath = s"file:///tmp/warehouse/spark/hudi/${tableName}"
+    val df = spark.read.format("hudi").load(basePath)
+    df.createOrReplaceTempView(tableName)
+    spark.sql(s"select _hoodie_commit_time, value from ${tableName}").show(false)
+```
