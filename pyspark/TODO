@@ -6,3 +6,4 @@
     Data playground account and maybe add s3 backend for this data. Get this syncing to the glue catalog.
 5. Schema evolution needs to be managed by this process.
     This doesn't need to be done right now, but we should test its behaviour.
+6. Get Hudi Deltastream working
