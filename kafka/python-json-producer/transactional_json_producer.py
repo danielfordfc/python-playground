@@ -129,7 +129,7 @@ def main(args):
         'bootstrap.servers': args.bootstrap_servers,
         'transactional.id': "trans-id",
         })
-    
+
     fake = faker.Faker()
 
     producer.init_transactions()
@@ -142,7 +142,7 @@ def main(args):
         try:
             user_name = fake.name()
             user_address = fake.address()
-            user_favorite_number = int(fake.random_number())
+            user_favorite_number = int(fake.random_number(1, 100))
             user_favorite_color = fake.color_name()
             user = User(name=user_name,
                         address=user_address,
