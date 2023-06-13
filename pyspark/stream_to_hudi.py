@@ -2,8 +2,6 @@ from pyspark.sql import SparkSession
 # from pyspark.sql.avro.functions import from_avro
 # from pyspark.sql.functions import from_json, current_timestamp
 # from pyspark.sql.types import TimestampType, StructType, StringType, IntegerType
-
-
 import sys
 
 
