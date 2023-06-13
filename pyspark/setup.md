@@ -47,7 +47,7 @@ python-playground/kafka/python-avro-producer
 
 Spam this a few of times and you'll see the transactional messages arrive in your topic in the control center.
 
-### Utility 3 - Stream to Hudi from kafka
+### Utility 3 - Stream to Hudi from kafka (Spark Structured Streaming)
 
 1. This part assumes you've got a topic, and you're ready to stream it to a hudi table!
 2. Run the following command to stream the data from kafka to hudi from this dir:
@@ -72,6 +72,33 @@ rm -rf /tmp/warehouse/spark/hudi
 OR for individual tables...
 
 rm -rf /tmp/warehouse/spark/hudi/{table_name}
+```
+
+### Utility 4 - Stream to Hudi from kafka (Hudi DeltaStreamer)
+
+1. This part assumes you've got a topic, and you're ready to stream it to a hudi table!
+2. Run the following command to stream the data from kafka to hudi from this dir:
+
+Assuming you're cd into the pyspark/ dir:
+
+```bash
+bash spark_deltastreamer.sh -o hudi_deltastreamer -t {topic_name}
+```
+
+-o = output dir (required)
+-t = topic name (required)
+-b = base path (optional) - defaults to /tmp/warehouse/spark/{output dir}
+-l = log4j path (optional) - defaults to local log4j2.properties file
+-d = debug bool (optional) - defaults to false - set to true to enable debug logging
+
+3. If required, to clear all your hudi tables, run the following command:
+
+```bash
+rm -rf /tmp/warehouse/spark/hudi_deltastreamer
+
+OR for individual tables...
+
+rm -rf /tmp/warehouse/spark/hudi_deltastreamer/{table_name}
 ```
 
 ### Querying the Hudi table
