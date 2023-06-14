@@ -56,12 +56,10 @@ spark-submit \
   --properties-file spark.properties \
     hudi-utilities-bundle_2.12-0.12.1.jar \
   --op INSERT \
-  --enable-sync \
-  --continuous \
   --props /tmp/hoodie-conf-${topic}.properties \
   --schemaprovider-class org.apache.hudi.utilities.schema.SchemaRegistryProvider \
   --source-class org.apache.hudi.utilities.sources.AvroKafkaSource \
   --source-ordering-field viewtime  \
   --table-type COPY_ON_WRITE \
-  --target-base-path $base_path \
-  --target-table $table \
+  --target-base-path $base_path/$table \
+  --target-table $table
