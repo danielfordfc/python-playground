@@ -28,7 +28,7 @@ def main(base_dir, topic, output):
 
     raw_df = spark.read.format("hudi").load(base_path)
     raw_df.createOrReplaceTempView(table_name)
-    spark.sql(f"select _hoodie_commit_time, value from {table_name}").show(truncate=False)
+    spark.sql(f"select * from {table_name}").show(truncate=False)
 
 
 if __name__ == "__main__":
