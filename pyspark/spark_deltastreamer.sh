@@ -1,6 +1,6 @@
 #!/bin/bash
 
-base_path_default="file:///tmp/warehouse/spark/$output"
+base_path_default="file:///tmp/warehouse/spark"
 LOG4J_PATH_default="log4j2.properties"
 DEBUG_BOOL_default="false"
 
@@ -16,7 +16,7 @@ done
 
 export output=${output}
 export topic=${topic}
-export base_path=${base_path:-$base_path_default}
+export base_path=${base_path:-$base_path_default}/${output}
 export LOG4J_PATH=${LOG4J_PATH:-$LOG4J_PATH_default}
 export DEBUG_BOOL=${DEBUG_BOOL:-$DEBUG_BOOL_default}
 export table=$(echo "$topic" | tr '-' '_')
@@ -63,5 +63,5 @@ spark-submit \
   --source-class org.apache.hudi.utilities.sources.AvroKafkaSource \
   --source-ordering-field viewtime  \
   --table-type COPY_ON_WRITE \
-  --target-base-path file:///tmp/warehouse/spark/hudi4 \
-  --target-table $table
+  --target-base-path $base_path \
+  --target-table $table \
