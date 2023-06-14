@@ -56,7 +56,6 @@ spark-submit \
   --properties-file spark.properties \
     hudi-utilities-bundle_2.12-0.12.1.jar \
   --op INSERT \
-  --continuous \
   --props /tmp/hoodie-conf-${topic}.properties \
   --schemaprovider-class org.apache.hudi.utilities.schema.SchemaRegistryProvider \
   --source-class org.apache.hudi.utilities.sources.AvroKafkaSource \
