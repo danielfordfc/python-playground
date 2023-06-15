@@ -19,33 +19,6 @@ pyspark on spark 3.3.2 and scala 2.12.x was used for this project and is set in 
 - Install pyspark using `pip install pyspark`
 
 python-playground/kafka/python-avro-producer
-### Utility 1 - Producing to an Avro topic
-
-```bash
-    cd python-playground/kafka/python-avro-producer 
-```
-
-```bash
-    python3 confluent_avro_producer.py -b "localhost:9092" -s "http://localhost:8081" -t {topic name}  -n 4
-```
-
--b = bootstrap server
--s = schema registry
--t = topic name
--n = number of messages to produce
-
-### Utility 2 - Producing to a transactional topic
-
-```bash
-    python3 transactional_json_producer.py -b "localhost:9092" -s "http://localhost:8081" -t {topic name}  -n 4
-```
-
--b = bootstrap server
--s = schema registry
--t = topic name
--n = number of messages to produce
-
-Spam this a few of times and you'll see the transactional messages arrive in your topic in the control center.
 
 ### Utility 3 - Stream to Hudi from kafka (Spark Structured Streaming)
 

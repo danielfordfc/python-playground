@@ -53,6 +53,7 @@ PACKAGES=(
     "org.apache.kafka:kafka-clients:3.2.1"
     "org.apache.spark:spark-avro_2.12:3.3.2"
     "org.apache.hudi:hudi-spark3.3-bundle_2.12:0.12.2"
+    "za.co.absa:abris_2.12:6.3.0"
 )
 PACKAGES=$(IFS=,; echo "${PACKAGES[*]}")
 
@@ -66,5 +67,4 @@ spark-submit \
    --conf "spark.driver.extraJavaOptions=${DEBUG}" \
    --properties-file spark.properties \
    --class org.apache.spark.examples.SparkPi \
-   stream_to_hudi.py $base_path $topic $output
-
+   simple_streamer_sr.py
