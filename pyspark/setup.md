@@ -137,7 +137,7 @@ Then run the following to query the table:
 Run command below
 
 ```bash
-cd pysaprk
+cd pyspark
 bash spark_query.sh -o hudi -t pageviews-avro
 ```
 

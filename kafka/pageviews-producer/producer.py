@@ -4,6 +4,7 @@
 import argparse
 import os
 from uuid import uuid4
+import json
 
 from confluent_kafka import Producer
 from confluent_kafka.serialization import StringSerializer, SerializationContext, MessageField
@@ -48,10 +49,37 @@ def delivery_report(err, msg):
         msg.key(), msg.topic(), msg.partition(), msg.offset()))
 
 
-def get_schema(schema_file_name):
-    path = os.path.realpath(os.path.dirname(__file__))
-    with open(f"{path}/schemas/{schema_file_name}") as f:
-        return f.read()
+def get_schema(classification):
+    if classification == "json":
+        return """
+            {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "title": "pageviews",
+                "description": "test",
+                "type": "object",
+                "properties": {
+                    "viewtime": {
+                    "description": "viewtime",
+                    "type": "number"
+                    },
+                    "userid": {
+                    "description": "userid",
+                    "type": "string",
+                    "exclusiveMinimum": 0
+                    },
+                    "pageid": {
+                    "description": "pageid",
+                    "type": "string"
+                    }
+                },
+                "required": [ "viewtime", "userid", "pageid" ]
+            }
+        """
+    else:
+        path = os.path.realpath(os.path.dirname(__file__))
+        avro_schema_file = "pageviews.json"
+        with open(f"{path}/schemas/{avro_schema_file}") as f:
+            return f.read()
 
 
 def create_value_serializer(schema_registry, classfication):
@@ -59,16 +87,16 @@ def create_value_serializer(schema_registry, classfication):
     schema_registry_conf = {'url': schema_registry}
     schema_registry_client = SchemaRegistryClient(schema_registry_conf)
 
+    schema_str = get_schema(classification=classfication)
+
     if classfication == "avro" or classfication == "transactional":
-        schema_str = get_schema(schema_file_name="pageviews.avsc")
         return AvroSerializer(
             schema_registry_client,
             schema_str,
             to_dict
         )
     elif classfication == "json":
-        schema_str = get_schema(schema_file_name="pageviews.json")
-        JSONSerializer(
+        return JSONSerializer(
             schema_str,
             schema_registry_client,
             to_dict
