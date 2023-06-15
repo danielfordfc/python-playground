@@ -4,6 +4,8 @@ from pyspark.sql import SparkSession
 # from pyspark.sql.types import TimestampType, StructType, StringType, IntegerType
 import sys
 
+from schema_registry_utils import manipulate_udf
+
 
 def main(base_dir, topic, output):
 
@@ -31,11 +33,10 @@ def main(base_dir, topic, output):
     table_name = topic.replace('-', '_')
 
     # deserialize value field that is JSONSerializer encoded
-    kafka_df = kafka_df.selectExpr("offset", "partition", "CAST(value AS STRING)", "CAST(timestamp AS TIMESTAMP)")
+    # kafka_df = kafka_df.selectExpr("offset", "partition", "CAST(value AS STRING)", "CAST(timestamp AS TIMESTAMP)")
 
-    # parsed_df = kafka_df.withColumn("value", from_json("value", schema)) \
-    # .withColumn("ts", current_timestamp().cast(TimestampType()))
-    # deserialize the kafka message using the avro schema
+    kafka_df = manipulate_udf(spark, topic, kafka_df)
+
 
     query = kafka_df \
         .writeStream \
