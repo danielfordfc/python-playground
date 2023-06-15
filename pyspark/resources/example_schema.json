@@ -1,0 +1,6 @@
+{
+    "subject": "pageviews-avro-value",
+    "version": 1,
+    "id": 4,
+    "schema": "{\"type\":\"record\",\"name\":\"pageviews\",\"namespace\":\"confluent.io.examples.serialization.avro\",\"fields\":[{\"name\":\"viewtime\",\"type\":{\"type\":\"long\",\"format_as_time\":\"unix_long\",\"arg.properties\":{\"iteration\":{\"start\":1,\"step\":10}}}},{\"name\":\"userid\",\"type\":{\"type\":\"string\",\"arg.properties\":{\"regex\":\"User_[1-9]\"}}},{\"name\":\"pageid\",\"type\":{\"type\":\"string\",\"arg.properties\":{\"regex\":\"Page_[1-9][0-9]\"}}}]}"
+}
