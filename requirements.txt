@@ -1,8 +1,10 @@
+
 attrs==23.1.0
 certifi==2023.5.7
 charset-normalizer==3.1.0
 confluent-kafka==2.1.1
 Faker==18.10.1
+fastavro==1.7.4
 idna==3.4
 jsonschema==4.17.3
 pyrsistent==0.19.3
@@ -10,3 +12,12 @@ python-dateutil==2.8.2
 requests==2.31.0
 six==1.16.0
 urllib3==2.0.3
+avro-python3
+pip-tools
+argparse
+requests
+jsonschema
+avro
+faker
+faker-schema
+avro-json-serializer
