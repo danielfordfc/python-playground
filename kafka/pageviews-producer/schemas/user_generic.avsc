@@ -5,7 +5,6 @@
         {
             "name": "name",
             "type": "string"
-
         },
         {
             "name": "favorite_number",

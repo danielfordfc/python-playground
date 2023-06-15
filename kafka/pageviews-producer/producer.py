@@ -77,7 +77,7 @@ def get_schema(classification):
         """
     else:
         path = os.path.realpath(os.path.dirname(__file__))
-        avro_schema_file = "pageviews.json"
+        avro_schema_file = "pageviews.avsc"
         with open(f"{path}/schemas/{avro_schema_file}") as f:
             return f.read()
 
