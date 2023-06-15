@@ -53,6 +53,8 @@ PACKAGES=(
     "org.apache.kafka:kafka-clients:3.2.1"
     "org.apache.spark:spark-avro_2.12:3.3.2"
     "org.apache.hudi:hudi-spark3.3-bundle_2.12:0.12.2"
+    "za.co.absa:abris_2.12:6.1.1"
+    ""
 )
 PACKAGES=$(IFS=,; echo "${PACKAGES[*]}")
 
