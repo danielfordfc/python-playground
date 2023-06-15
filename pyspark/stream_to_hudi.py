@@ -32,10 +32,10 @@ def main(base_dir, topic, output):
     from_avro_abris_settings = from_avro_abris_config({'schema.registry.url': 'http://localhost:8081'}, f'{topic}', False)
     print(from_avro_abris_settings)
     df = kafka_df.withColumn("parsed", from_avro("value", from_avro_abris_settings))
-    df.show()
+    # df.show()
 
 
-    # table_name = topic.replace('-', '_')
+    table_name = topic.replace('-', '_')
 
     # # deserialize value field that is JSONSerializer encoded
     # kafka_df = kafka_df.selectExpr("offset", "partition", "CAST(value AS STRING)", "CAST(timestamp AS TIMESTAMP)")
@@ -44,22 +44,22 @@ def main(base_dir, topic, output):
     # # .withColumn("ts", current_timestamp().cast(TimestampType()))
     # # deserialize the kafka message using the avro schema
 
-    # query = kafka_df \
-    #     .writeStream \
-    #     .format("hudi") \
-    #     .option("checkpointLocation", f"{base_dir}/{output}/{table_name}") \
-    #     .option("hoodie.table.name", table_name) \
-    #     .option("hoodie.datasource.write.precombine.field", "timestamp") \
-    #     .option("hoodie.datasource.write.recordkey.field", "timestamp") \
-    #     .option("hoodie.merge.allow.duplicate.on.inserts", True) \
-    #     .option("hoodie.datasource.write.operation", "insert") \
-    #     .option("hoodie.datasource.write.table.type", "COPY_ON_WRITE") \
-    #     .option("hoodie.datasource.write.keygenerator.class", "org.apache.hudi.keygen.NonpartitionedKeyGenerator") \
-    #     .outputMode("append") \
-    #     .option("path", f"{base_dir}/{output}/{table_name}") \
-    #     .start() 
+    query = df \
+        .writeStream \
+        .format("hudi") \
+        .option("checkpointLocation", f"{base_dir}/{output}/{table_name}") \
+        .option("hoodie.table.name", table_name) \
+        .option("hoodie.datasource.write.precombine.field", "timestamp") \
+        .option("hoodie.datasource.write.recordkey.field", "timestamp") \
+        .option("hoodie.merge.allow.duplicate.on.inserts", True) \
+        .option("hoodie.datasource.write.operation", "insert") \
+        .option("hoodie.datasource.write.table.type", "COPY_ON_WRITE") \
+        .option("hoodie.datasource.write.keygenerator.class", "org.apache.hudi.keygen.NonpartitionedKeyGenerator") \
+        .outputMode("append") \
+        .option("path", f"{base_dir}/{output}/{table_name}") \
+        .start() 
 
-    # query.awaitTermination()
+    query.awaitTermination()
 
 
 if __name__ == "__main__":

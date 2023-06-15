@@ -64,6 +64,7 @@ spark-submit \
    --executor-memory 1g \
    --executor-cores 1 \
    --packages ${PACKAGES} \
+   --repositories https://packages.confluent.io/maven/ \
    --conf "spark.driver.extraJavaOptions=${LOG4J_SETTING}" \
    --conf "spark.driver.extraJavaOptions=${DEBUG}" \
    --properties-file spark.properties \
