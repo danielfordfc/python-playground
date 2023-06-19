@@ -15,16 +15,20 @@ from confluent_kafka.admin import AdminClient, NewTopic
 
 
 class Pageviews(object):
-    def __init__(self, viewtime, userid, pageid):
+    def __init__(self, viewtime, userid, pageid, test1, test2):
         self.viewtime = viewtime
         self.userid = userid
         self.pageid = pageid
+        self.test1 = test1
+        self.test2 = test2
 
 
 def to_dict(pageviews, ctx):
     return dict(viewtime=pageviews.viewtime,
                 userid=pageviews.userid,
-                pageid=pageviews.pageid)
+                pageid=pageviews.pageid,
+                test1=pageviews.test1,
+                test2=pageviews.test2)
 
 
 def delivery_report(err, msg):
@@ -77,7 +81,7 @@ def get_schema(classification):
         """
     else:
         path = os.path.realpath(os.path.dirname(__file__))
-        avro_schema_file = "pageviews.json"
+        avro_schema_file = "pageviews.avsc"
         with open(f"{path}/schemas/{avro_schema_file}") as f:
             return f.read()
 
@@ -115,7 +119,9 @@ def produce_pageview_data(producer, msgs, topic, key_serializer, value_serialize
             pageviews = Pageviews(
                 viewtime=viewtime,
                 userid=userid,
-                pageid=pageid
+                pageid=pageid,
+                test1="test1",
+                test2="test2"
             )
             producer.produce(topic=topic,
                              key=key_serializer(str(uuid4())),

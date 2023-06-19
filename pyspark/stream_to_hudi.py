@@ -1,17 +1,9 @@
 from pyspark.sql import SparkSession
-# from pyspark.sql.avro.functions import from_avro
-# from pyspark.sql.functions import from_json, current_timestamp
-# from pyspark.sql.types import TimestampType, StructType, StringType, IntegerType
 import sys
 from abris import from_avro_abris_config, from_avro
 
 
 def main(base_dir, topic, output):
-
-    # build spark schema
-
-    # schema = StructType().add("name", StringType()).add("favorite_number", IntegerType()).add("favorite_color", StringType())
-
     spark = SparkSession.builder \
         .appName("kafka-example") \
         .getOrCreate()
@@ -32,21 +24,14 @@ def main(base_dir, topic, output):
     from_avro_abris_settings = from_avro_abris_config({'schema.registry.url': 'http://localhost:8081'}, f'{topic}', False)
     print(from_avro_abris_settings)
     df = kafka_df.withColumn("parsed", from_avro("value", from_avro_abris_settings))
-    # df.show()
-
+    df = df.select('timestamp', 'offset', 'partition', 'parsed.*')
 
     table_name = topic.replace('-', '_')
-
-    # # deserialize value field that is JSONSerializer encoded
-    # kafka_df = kafka_df.selectExpr("offset", "partition", "CAST(value AS STRING)", "CAST(timestamp AS TIMESTAMP)")
-
-    # # parsed_df = kafka_df.withColumn("value", from_json("value", schema)) \
-    # # .withColumn("ts", current_timestamp().cast(TimestampType()))
-    # # deserialize the kafka message using the avro schema
 
     query = df \
         .writeStream \
         .format("hudi") \
+        .option("mergeSchema", "true") \
         .option("checkpointLocation", f"{base_dir}/{output}/{table_name}") \
         .option("hoodie.table.name", table_name) \
         .option("hoodie.datasource.write.precombine.field", "timestamp") \
