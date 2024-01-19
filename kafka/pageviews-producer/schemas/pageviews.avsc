@@ -14,6 +14,21 @@
     {
       "name": "pageid",
       "type": "string"
+    },
+    {
+      "name": "address",
+      "type": "string",
+      "default": "null"
+    },
+    {
+      "name": "added_column",
+      "type": "string",
+      "default": "null"
+    },
+    {
+      "name": "added_column2",
+      "type": "int",
+      "default": 42
     }
   ]
 }

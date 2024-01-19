@@ -15,16 +15,23 @@ from confluent_kafka.admin import AdminClient, NewTopic
 
 
 class Pageviews(object):
-    def __init__(self, viewtime, userid, pageid):
+    def __init__(self, viewtime, userid, pageid, address, column, column2):
         self.viewtime = viewtime
         self.userid = userid
         self.pageid = pageid
+        self.address = address
+        self.column = column
+        self.column2 = column2
+
 
 
 def to_dict(pageviews, ctx):
     return dict(viewtime=pageviews.viewtime,
                 userid=pageviews.userid,
-                pageid=pageviews.pageid)
+                pageid=pageviews.pageid,
+                address=pageviews.address,
+                column=pageviews.column,
+                column2=pageviews.column2)
 
 
 def delivery_report(err, msg):
@@ -112,10 +119,16 @@ def produce_pageview_data(producer, msgs, topic, key_serializer, value_serialize
             viewtime = int(f"10{i}")
             userid = f"User_{i}"
             pageid = f"Page_{i}"
+            address = f"Address_{i}"
+            column = f"Column_{i}"
+            column2 = i
             pageviews = Pageviews(
                 viewtime=viewtime,
                 userid=userid,
-                pageid=pageid
+                pageid=pageid,
+                address=address,
+                column=column, 
+                column2=column2
             )
             producer.produce(topic=topic,
                              key=key_serializer(str(uuid4())),
