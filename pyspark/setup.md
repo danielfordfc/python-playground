@@ -98,12 +98,12 @@ Run the following to enter the spark-shell with the hudi package and extensions:
 Then run the following to query the table:
 
 ```scala
-    val topic = "your-topic-name" // change this to the topic you want to query, rest of this block should be copy paste...
+    val topic = "pageviews-avro" // change this to the topic you want to query, rest of this block should be copy paste...
     val tableName = topic.replaceAll("-", "_")
     val basePath = s"file:///tmp/warehouse/spark/hudi/${tableName}"
     val df = spark.read.format("hudi").load(basePath)
     df.createOrReplaceTempView(tableName)
-    spark.sql(s"select _hoodie_commit_time, value from ${tableName}").show(false)
+    spark.sql(s"select * from ${tableName}").show(false)
 ```
 
 #### Option 2

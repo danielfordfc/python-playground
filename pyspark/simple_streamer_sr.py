@@ -22,6 +22,7 @@ def main():
                 .format("kafka") \
                 .option("kafka.bootstrap.servers", "localhost:9092") \
                 .option("subscribe", topic) \
+                .option("mergeSchema", "true") \
                 .option("includeHeaders", "true") \
                 .option("startingOffsets", "earliest") \
                 .load()
@@ -34,26 +35,15 @@ def main():
                 })
 
         #RecordSchema obj
-        schema_obj = sr.get_latest_schema(f"{topic}-value")[1]
-
-        schema_dict = schema_obj.to_json()
-
-        schema_string = json.dumps(schema_dict)
-
+        schema_string = json.dumps(sr.get_latest_schema(f"{topic}-value")[1].to_json())
 
         # for each binary value, seek past the first 5 bytes to get the avro encoded data
         kafka_df = kafka_df.withColumn("value", expr("substring(value, 6)"))
 
-
         personDF = kafka_df.select('timestamp','offset','partition','value', 
                                 from_avro(col("value"), schema_string).alias("person"))
 
-        personDF = personDF.select('timestamp','offset','partition','person.*') 
-                                
-        # query = personDF.writeStream \
-        #     .outputMode("append") \
-        #     .format("console") \
-        #     .start()
+        personDF = personDF.select('timestamp','offset','partition','person.*')              
         
         query = personDF \
                 .writeStream \
