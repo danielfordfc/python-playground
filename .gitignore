@@ -140,3 +140,5 @@ pyspark/output/
 pyspark/hudi_output/
 pyspark/hudi_checkpoint/
 metastore_db/
+flink/flink-1.17.2/
+flink/flink-1.17.2-bin-scala_2.12.tgz
