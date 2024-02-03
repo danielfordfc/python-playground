@@ -1,0 +1,51 @@
+schema_type: dataframe
+version: 0.18.0
+columns:
+  state:
+    title: null
+    description: null
+    dtype: str
+    nullable: false
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  city:
+    title: null
+    description: null
+    dtype: str
+    nullable: false
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  price:
+    title: null
+    description: null
+    dtype: int64
+    nullable: false
+    checks:
+      in_range:
+        min_value: 5
+        max_value: 20
+        include_min: true
+        include_max: true
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+checks: null
+index: null
+dtype: null
+coerce: false
+strict: false
+name: Schema
+ordered: false
+unique: null
+report_duplicates: all
+unique_column_names: false
+add_missing_columns: false
+title: null
+description: null
