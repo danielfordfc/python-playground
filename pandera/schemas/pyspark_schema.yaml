@@ -6,7 +6,10 @@ columns:
     description: null
     dtype: str
     nullable: false
-    checks: null
+    checks:
+      isin:
+      - FL
+      - CA
     unique: false
     coerce: false
     required: true
@@ -17,7 +20,7 @@ columns:
     dtype: str
     nullable: false
     checks: null
-    unique: false
+    unique: true
     coerce: false
     required: true
     regex: false
