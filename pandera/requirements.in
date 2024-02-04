@@ -1,9 +1,0 @@
-pyyaml
-black
-frictionless
-
-pandera
-pandas
-pandera[hypotheses]
-pandera[io]
-pandera[strategies]
