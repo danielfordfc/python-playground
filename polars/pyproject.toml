@@ -1,0 +1,14 @@
+[project]
+name = "polars"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "polars",
+    "relationalize>=0.1.9",
+    "ruff>=0.6.7",
+]
+
+[tool.uv.sources]
+polars = { workspace = true }
